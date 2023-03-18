@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url_for('static',filename='css/style.css') }}">
+    <title>Wall</title>
+</head>
+<body>
+    <div class="container">   
+        <div>
+            <nav class="navbar navbar-light bg-info d-flex justify-content-between">
+                <h1 class="navbar-brand p-2">Coding Dojo Wall</h1>
+                <div class="d-flex">
+                    <span class="px-4">Welcome, {{listed_user.first_name}}</span>
+                    <a href='/logout'>Log Out</a>
+                </div>
+                
+            </nav>
+
+        </div>
+        
+        <div class="container">
+
+            <p class="pt-5">What's on your mind? Create a new post:</p>
+
+            <form action="/create/post" method="POST" >
+                {# <!-- <input type="hidden" name="user_id" value="{{session['user_id']}}"> --> #}
+                <input type="hidden" name="user_id" value="{{listed_user.id}}">
+                {% with messages = get_flashed_messages() %}
+				    {% if messages %}
+					    {% for message in messages %}
+						<p class='form-control is-invalid'>{{message}}</p>
+					    {% endfor %}
+				    {% endif %}
+		        {% endwith %}
+
+
+                <div class="form-group">
+                    <label for="text-box"></label>
+                    <textarea class="form-control" id ="content" name = "content" rows="3"></textarea>
+                </div><br>
+        
+                <div class="d-flex justify-content-end">
+                    <input type="submit" value="Publish" class="btn btn-primary ">
+                </div>
+            </form>
+
+            <div>
+                <h3 class="pt-4  mt-5 border-top">All Community Posts</h3>
+
+                <div class="overflow-auto p-3 bg-light "
+                    style="max-width: w-75; max-height: 300px;">
+                    {% for post in all_posts %}
+                    
+                        <p>{{post.creator.first_name}} - {{post.created_at.strftime("%b %d")}}</p>
+                        <p >{{post.content}}</p>
+                        {% if post.user_id == session['user_id'] %}
+                            <a href="/posts/delete/{{post.id}}" class="btn btn-danger">delete</a>
+                        {% endif %}
+                        <hr>
+                    {% endfor %}
+                        
+                    
+                </div>
+                
+            </div>
+        
+        
+        </div>
+        
+    </div> 
+
+
+
+
+</body>
+</html>
